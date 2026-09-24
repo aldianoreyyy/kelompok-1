@@ -68,10 +68,9 @@ body {
 
 
 .display-number {
-    color: white;
-
-    font-size: 80px;
-    font-weight: 300;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 
