@@ -47,6 +47,9 @@ body {
     padding: 15px 30px;
 
     margin-bottom: 65px;
+
+    /* Biar isi tidak keluar kotak */
+    overflow: hidden;
 }
 
 
@@ -64,13 +67,25 @@ body {
     font-size: 22px;
 
     cursor: pointer;
+
+    /* Ukuran icon jangan mengecil */
+    flex-shrink: 0;
 }
 
 
 .display-number {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+
+    color: white;
+    font-size: 64px;
+    font-weight: 400;
+
+    text-align: right;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 
