@@ -104,3 +104,33 @@ document.addEventListener("keydown", (event) => {
     chooseOperator("÷");
   } else if (key === "Enter" || key === "=") calculate();
 });
+
+
+const calculatePercent = () => {
+  if (state.currentNumber === "Error") return;
+  const number = Number(state.currentNumber);
+  state.currentNumber = formatNumber(
+    state.previousNumber !== null ? (state.previousNumber * number) / 100 : number / 100
+  );
+  updateDisplay();
+};
+
+const clearCalculator = () => {
+  state.currentNumber = "0";
+  state.previousNumber = null;
+  state.currentOperator = null;
+  updateDisplay();
+};
+
+const markUp = () => {
+  if (state.previousNumber === null) return;
+
+  const percentage = Number(state.currentNumber);
+  const result = state.previousNumber + (state.previousNumber * percentage / 100);
+  state.currentNumber = formatNumber(result);
+  state.history.push(`${state.previousNumber} + ${percentage}% = ${state.currentNumber}`);
+  state.grandTotal += Number(state.currentNumber);
+  state.previousNumber = null;
+  state.currentOperator = null;
+  updateDisplay();
+};
