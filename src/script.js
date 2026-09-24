@@ -12,7 +12,19 @@ const state = {
   currentOperator: null,
   memory: 0,
   grandTotal: 0,
-  history: []
+
+  // Ambil history yang sudah tersimpan
+  history: JSON.parse(
+    localStorage.getItem("calculatorHistory") || "[]"
+  )
+};
+
+// Simpan history ke localStorage
+const saveHistory = () => {
+  localStorage.setItem(
+    "calculatorHistory",
+    JSON.stringify(state.history)
+  );
 };
 
 const updateDisplay = () => {
@@ -20,33 +32,59 @@ const updateDisplay = () => {
 };
 
 const formatNumber = (number) =>
-  Number.isFinite(number) ? Number(number.toFixed(10)).toString() : "Error";
+  Number.isFinite(number)
+    ? Number(number.toFixed(10)).toString()
+    : "Error";
 
 const inputNumber = (number) => {
-  if (state.currentNumber === "Error") state.currentNumber = "0";
-  state.currentNumber = state.currentNumber === "0" && number !== "." ? number : state.currentNumber + number;
+  if (state.currentNumber === "Error") {
+    state.currentNumber = "0";
+  }
+
+  state.currentNumber =
+    state.currentNumber === "0" && number !== "."
+      ? number
+      : state.currentNumber + number;
+
   updateDisplay();
 };
 
 const inputDecimal = () => {
-  if (state.currentNumber === "Error") state.currentNumber = "0";
+  if (state.currentNumber === "Error") {
+    state.currentNumber = "0";
+  }
+
   if (state.currentNumber.includes(".")) return;
+
   state.currentNumber += ".";
   updateDisplay();
 };
 
 const chooseOperator = (operator) => {
   if (state.currentNumber === "Error") return;
-  if (state.previousNumber !== null && state.currentOperator !== null) calculate();
+
+  if (
+    state.previousNumber !== null &&
+    state.currentOperator !== null
+  ) {
+    calculate();
+  }
 
   state.previousNumber = Number(state.currentNumber);
   state.currentOperator = operator;
   state.currentNumber = "0";
+
   updateDisplay();
 };
 
 const calculate = () => {
-  if (state.previousNumber === null || state.currentOperator === null || state.currentNumber === "Error") return;
+  if (
+    state.previousNumber === null ||
+    state.currentOperator === null ||
+    state.currentNumber === "Error"
+  ) {
+    return;
+  }
 
   const current = Number(state.currentNumber);
   const previous = state.previousNumber;
@@ -56,32 +94,50 @@ const calculate = () => {
     state.currentNumber = "Error";
     state.previousNumber = null;
     state.currentOperator = null;
+
     updateDisplay();
+
     alert("Tidak bisa membagi dengan 0!");
     return;
   }
 
   const result = formatNumber(
-    operator === "+" ? previous + current :
-    operator === "-" ? previous - current :
-    operator === "×" ? previous * current :
-    previous / current
+    operator === "+"
+      ? previous + current
+      : operator === "-"
+      ? previous - current
+      : operator === "×"
+      ? previous * current
+      : previous / current
   );
 
-  state.history.push(`${previous} ${operator} ${current} = ${result}`);
+  // Masukkan perhitungan ke history
+  state.history.push(
+    `${previous} ${operator} ${current} = ${result}`
+  );
+
+  // Simpan history
+  saveHistory();
+
   state.grandTotal += Number(result);
   state.currentNumber = result;
   state.previousNumber = null;
   state.currentOperator = null;
+
   updateDisplay();
 };
 
 const calculatePercent = () => {
   if (state.currentNumber === "Error") return;
+
   const number = Number(state.currentNumber);
+
   state.currentNumber = formatNumber(
-    state.previousNumber !== null ? (state.previousNumber * number) / 100 : number / 100
+    state.previousNumber !== null
+      ? (state.previousNumber * number) / 100
+      : number / 100
   );
+
   updateDisplay();
 };
 
@@ -89,17 +145,24 @@ const clearCalculator = () => {
   state.currentNumber = "0";
   state.previousNumber = null;
   state.currentOperator = null;
+
   updateDisplay();
 };
 
 const memoryPlus = () => {
   const number = Number(state.currentNumber);
-  if (Number.isFinite(number)) state.memory += number;
+
+  if (Number.isFinite(number)) {
+    state.memory += number;
+  }
 };
 
 const memoryMinus = () => {
   const number = Number(state.currentNumber);
-  if (Number.isFinite(number)) state.memory -= number;
+
+  if (Number.isFinite(number)) {
+    state.memory -= number;
+  }
 };
 
 const memoryRecall = () => {
@@ -108,6 +171,7 @@ const memoryRecall = () => {
   } else {
     state.memory = 0;
   }
+
   updateDisplay();
 };
 
@@ -120,78 +184,177 @@ const markUp = () => {
   if (state.previousNumber === null) return;
 
   const percentage = Number(state.currentNumber);
-  const result = state.previousNumber + (state.previousNumber * percentage / 100);
+
+  const result =
+    state.previousNumber +
+    (state.previousNumber * percentage) / 100;
+
   state.currentNumber = formatNumber(result);
-  state.history.push(`${state.previousNumber} + ${percentage}% = ${state.currentNumber}`);
+
+  // Masukkan MU ke history
+  state.history.push(
+    `${state.previousNumber} + ${percentage}% = ${state.currentNumber}`
+  );
+
+  // Simpan history
+  saveHistory();
+
   state.grandTotal += Number(state.currentNumber);
   state.previousNumber = null;
   state.currentOperator = null;
+
   updateDisplay();
 };
 
+// Pindah ke halaman history
 const showHistory = () => {
-  if (state.history.length === 0) {
-    alert("Belum ada riwayat perhitungan.");
-    return;
-  }
-
-  const historyText = state.history.slice(-10).reverse().join("\n");
-  alert("RIWAYAT PERHITUNGAN\n\n" + historyText);
+  window.location.href = "history.html";
 };
+
+
+// =========================
+// NUMBER BUTTON
+// =========================
 
 numberButtons.forEach((button) => {
   button.addEventListener("click", () => {
     const value = button.textContent.trim();
-    value === "." ? inputDecimal() : inputNumber(value);
+
+    value === "."
+      ? inputDecimal()
+      : inputNumber(value);
   });
 });
+
+
+// =========================
+// OPERATOR BUTTON
+// =========================
 
 operatorButtons.forEach((button) => {
   button.addEventListener("click", () => {
     const value = button.textContent.trim();
-    if (value === "%") calculatePercent();
-    else if (value === "MU") markUp();
-    else chooseOperator(value);
-  });
-});
 
-plusButton.addEventListener("click", () => chooseOperator("+"));
-equalButton.addEventListener("click", calculate);
-
-memoryButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const value = button.textContent.trim();
-    switch (value) {
-      case "M+": memoryPlus(); break;
-      case "M-": memoryMinus(); break;
-      case "MRC": memoryRecall(); break;
-      case "GT": grandTotalFunction(); break;
-      case "AC": clearCalculator(); break;
+    if (value === "%") {
+      calculatePercent();
+    } else if (value === "MU") {
+      markUp();
+    } else {
+      chooseOperator(value);
     }
   });
 });
 
-historyButton.addEventListener("click", showHistory);
+
+// =========================
+// PLUS & EQUAL
+// =========================
+
+plusButton.addEventListener(
+  "click",
+  () => chooseOperator("+")
+);
+
+equalButton.addEventListener(
+  "click",
+  calculate
+);
+
+
+// =========================
+// MEMORY BUTTON
+// =========================
+
+memoryButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const value = button.textContent.trim();
+
+    switch (value) {
+      case "M+":
+        memoryPlus();
+        break;
+
+      case "M-":
+        memoryMinus();
+        break;
+
+      case "MRC":
+        memoryRecall();
+        break;
+
+      case "GT":
+        grandTotalFunction();
+        break;
+
+      case "AC":
+        clearCalculator();
+        break;
+    }
+  });
+});
+
+
+// =========================
+// HISTORY BUTTON
+// =========================
+
+historyButton.addEventListener(
+  "click",
+  showHistory
+);
+
+
+// =========================
+// KEYBOARD
+// =========================
 
 document.addEventListener("keydown", (event) => {
   const key = event.key;
 
-  if (/^[0-9]$/.test(key)) inputNumber(key);
-  else if (key === ".") inputDecimal();
-  else if (key === "+") chooseOperator("+");
-  else if (key === "-") chooseOperator("-");
-  else if (key === "*") chooseOperator("×");
+  if (/^[0-9]$/.test(key)) {
+    inputNumber(key);
+  }
+
+  else if (key === ".") {
+    inputDecimal();
+  }
+
+  else if (key === "+") {
+    chooseOperator("+");
+  }
+
+  else if (key === "-") {
+    chooseOperator("-");
+  }
+
+  else if (key === "*") {
+    chooseOperator("×");
+  }
+
   else if (key === "/") {
     event.preventDefault();
     chooseOperator("÷");
-  } else if (key === "Enter" || key === "=") calculate();
-  else if (key === "Escape") clearCalculator();
+  }
+
+  else if (key === "Enter" || key === "=") {
+    calculate();
+  }
+
+  else if (key === "Escape") {
+    clearCalculator();
+  }
+
   else if (key === "Backspace") {
-    state.currentNumber = state.currentNumber.length > 1 && state.currentNumber !== "Error"
-      ? state.currentNumber.slice(0, -1)
-      : "0";
+    state.currentNumber =
+      state.currentNumber.length > 1 &&
+      state.currentNumber !== "Error"
+        ? state.currentNumber.slice(0, -1)
+        : "0";
+
     updateDisplay();
-  } else if (key === "%") {
+  }
+
+  else if (key === "%") {
     calculatePercent();
   }
 });

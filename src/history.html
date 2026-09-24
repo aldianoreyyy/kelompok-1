@@ -1,41 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>History Calculator</title>
+    <link rel="stylesheet" href="histori.css" />
+  </head>
 
-    <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
+  <body>
     <main class="history-page">
+      <button class="history-btn" onclick="window.location.href = 'index.html'">
+        ◴
+      </button>
 
-        <!-- Tombol kembali -->
-        <a href="index.html" class="history-back">
-            ◷
-        </a>
+      <div class="history-box">
+        <p class="history-empty" id="historyEmpty">
+          Hitungan dan hasil Anda ditampilkan di sini
+        </p>
 
-        <!-- Kotak History -->
-        <div class="history-box">
-
-            <!-- Muncul kalau belum ada history -->
-            <p class="history-empty" id="historyEmpty">
-                Hitungan dan hasil Anda ditampilkan di sini
-            </p>
-
-            <!-- History masuk ke sini -->
-            <div class="history-list" id="historyList"></div>
-
-        </div>
-
+        <div class="history-list" id="historyList"></div>
+      </div>
     </main>
 
     <script src="history.js"></script>
-
-</body>
-
+  </body>
 </html>

@@ -1,49 +1,28 @@
-const historyList = document.querySelector("#historyList");
-const historyEmpty = document.querySelector("#historyEmpty");
+const historyList = document.getElementById("historyList");
+const historyEmpty = document.getElementById("historyEmpty");
 
-// Ambil history dari localStorage
-const history = JSON.parse(
-  localStorage.getItem("calculatorHistory") || "[]"
-);
+// Ambil data dari localStorage
+const historyData =
+  JSON.parse(localStorage.getItem("calculatorHistory")) || [];
 
-// Kalau history masih kosong
-if (history.length === 0) {
+console.log("History:", historyData);
+
+// Kalau belum ada history
+if (historyData.length === 0) {
   historyEmpty.style.display = "block";
 } else {
+  // Hilangkan tulisan kosong
   historyEmpty.style.display = "none";
 
-  // History terbaru ditampilkan paling atas
-  history
+  // Tampilkan history terbaru paling atas
+  historyData
     .slice()
     .reverse()
     .forEach((item) => {
       const historyItem = document.createElement("div");
+
       historyItem.classList.add("history-item");
-
-      // Pisahkan operasi dan hasil
-      const equalIndex = item.lastIndexOf(" = ");
-
-      if (equalIndex !== -1) {
-        const expression = document.createElement("span");
-        expression.classList.add("history-expression");
-        expression.textContent = item.slice(0, equalIndex);
-
-        const equalSign = document.createElement("span");
-        equalSign.classList.add("history-equal");
-        equalSign.textContent = "=";
-
-        const result = document.createElement("span");
-        result.classList.add("history-result");
-        result.textContent = item.slice(equalIndex + 3);
-
-        historyItem.append(
-          expression,
-          equalSign,
-          result
-        );
-      } else {
-        historyItem.textContent = item;
-      }
+      historyItem.textContent = item;
 
       historyList.appendChild(historyItem);
     });
