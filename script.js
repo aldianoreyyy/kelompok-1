@@ -3,8 +3,6 @@ const numberButtons = document.querySelectorAll(".number");
 const operatorButtons = document.querySelectorAll(".operator");
 const equalButton = document.querySelector(".equal");
 const plusButton = document.querySelector(".plus");
-const memoryButtons = document.querySelectorAll(".memory");
-const historyButton = document.querySelector(".history-btn");
 
 const state = {
   currentNumber: "0",
@@ -76,69 +74,6 @@ const calculate = () => {
   updateDisplay();
 };
 
-const calculatePercent = () => {
-  if (state.currentNumber === "Error") return;
-  const number = Number(state.currentNumber);
-  state.currentNumber = formatNumber(
-    state.previousNumber !== null ? (state.previousNumber * number) / 100 : number / 100
-  );
-  updateDisplay();
-};
-
-const clearCalculator = () => {
-  state.currentNumber = "0";
-  state.previousNumber = null;
-  state.currentOperator = null;
-  updateDisplay();
-};
-
-const memoryPlus = () => {
-  const number = Number(state.currentNumber);
-  if (Number.isFinite(number)) state.memory += number;
-};
-
-const memoryMinus = () => {
-  const number = Number(state.currentNumber);
-  if (Number.isFinite(number)) state.memory -= number;
-};
-
-const memoryRecall = () => {
-  if (state.memory !== 0) {
-    state.currentNumber = formatNumber(state.memory);
-  } else {
-    state.memory = 0;
-  }
-  updateDisplay();
-};
-
-const grandTotalFunction = () => {
-  state.currentNumber = formatNumber(state.grandTotal);
-  updateDisplay();
-};
-
-const markUp = () => {
-  if (state.previousNumber === null) return;
-
-  const percentage = Number(state.currentNumber);
-  const result = state.previousNumber + (state.previousNumber * percentage / 100);
-  state.currentNumber = formatNumber(result);
-  state.history.push(`${state.previousNumber} + ${percentage}% = ${state.currentNumber}`);
-  state.grandTotal += Number(state.currentNumber);
-  state.previousNumber = null;
-  state.currentOperator = null;
-  updateDisplay();
-};
-
-const showHistory = () => {
-  if (state.history.length === 0) {
-    alert("Belum ada riwayat perhitungan.");
-    return;
-  }
-
-  const historyText = state.history.slice(-10).reverse().join("\n");
-  alert("RIWAYAT PERHITUNGAN\n\n" + historyText);
-};
-
 numberButtons.forEach((button) => {
   button.addEventListener("click", () => {
     const value = button.textContent.trim();
@@ -149,29 +84,12 @@ numberButtons.forEach((button) => {
 operatorButtons.forEach((button) => {
   button.addEventListener("click", () => {
     const value = button.textContent.trim();
-    if (value === "%") calculatePercent();
-    else if (value === "MU") markUp();
-    else chooseOperator(value);
+    chooseOperator(value);
   });
 });
 
 plusButton.addEventListener("click", () => chooseOperator("+"));
 equalButton.addEventListener("click", calculate);
-
-memoryButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const value = button.textContent.trim();
-    switch (value) {
-      case "M+": memoryPlus(); break;
-      case "M-": memoryMinus(); break;
-      case "MRC": memoryRecall(); break;
-      case "GT": grandTotalFunction(); break;
-      case "AC": clearCalculator(); break;
-    }
-  });
-});
-
-historyButton.addEventListener("click", showHistory);
 
 document.addEventListener("keydown", (event) => {
   const key = event.key;
@@ -185,13 +103,4 @@ document.addEventListener("keydown", (event) => {
     event.preventDefault();
     chooseOperator("÷");
   } else if (key === "Enter" || key === "=") calculate();
-  else if (key === "Escape") clearCalculator();
-  else if (key === "Backspace") {
-    state.currentNumber = state.currentNumber.length > 1 && state.currentNumber !== "Error"
-      ? state.currentNumber.slice(0, -1)
-      : "0";
-    updateDisplay();
-  } else if (key === "%") {
-    calculatePercent();
-  }
 });
