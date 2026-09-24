@@ -134,3 +134,37 @@ const markUp = () => {
   state.currentOperator = null;
   updateDisplay();
 };
+
+const memoryPlus = () => {
+  const number = Number(state.currentNumber);
+  if (Number.isFinite(number)) state.memory += number;
+};
+
+const memoryMinus = () => {
+  const number = Number(state.currentNumber);
+  if (Number.isFinite(number)) state.memory -= number;
+};
+
+const memoryRecall = () => {
+  if (state.memory !== 0) {
+    state.currentNumber = formatNumber(state.memory);
+  } else {
+    state.memory = 0;
+  }
+  updateDisplay();
+};
+
+const grandTotalFunction = () => {
+  state.currentNumber = formatNumber(state.grandTotal);
+  updateDisplay();
+};
+
+const showHistory = () => {
+  if (state.history.length === 0) {
+    alert("Belum ada riwayat perhitungan.");
+    return;
+  }
+
+  const historyText = state.history.slice(-10).reverse().join("\n");
+  alert("RIWAYAT PERHITUNGAN\n\n" + historyText);
+};
