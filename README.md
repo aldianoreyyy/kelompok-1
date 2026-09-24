@@ -56,7 +56,7 @@ melakukan operasi perhitungan dasar.
 
 Tambahkan screenshot aplikasi pada bagian ini.
 
-![Tampilan Kalkulator](assets/screenshot.png)
+![Tampilan Kalkulator](assets/image.png)
 
 ## Git Workflow
 
