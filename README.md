@@ -10,11 +10,11 @@ melakukan operasi perhitungan dasar.
 
 | Nama | Role |
 |------|------|
-| Aldiano | Project Manager |
-| Radithyo | Front-End Developer |
-| Nama Anggota | Back-End Developer |
-| Nama Anggota | UI/UX & Dokumentasi |
-| Nama Anggota | QA / Tester |
+| ALDIANO REEYVAN GUMILAR | Project Manager |
+| RADITYO ZAHIR SYAFIKRI | Front-End Developer |
+| NAUFAL AZMI DAFFA | Back-End Developer |
+| ARYA TRIYOGA DYAKSO  | UI/UX & Dokumentasi |
+| FACHRIE RADIYAN ALJUFRI  | QA / Tester |
 
 ## Fitur
 
